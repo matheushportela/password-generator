@@ -6,15 +6,22 @@ TODO Criar um dicionário que o usuario consiga associar a senha que ele escolhe
 """
 import string
 import secrets
+import os
+import json
+from dotenv import load_dotenv
 
-SYMBOLS = ['!', "@", "#", "$", "%", "&", "*"]
+
+load_dotenv()
+
+ENV_LIST_SYMBOLS = json.loads(os.environ['LIST_SYMBOLS'])
 
 
 def generate_password(length: int, symbols: bool, uppercase: bool):
+
     combination = string.ascii_lowercase + string.digits
 
     if symbols:
-        combination += secrets.choice(SYMBOLS)
+        combination += secrets.choice(ENV_LIST_SYMBOLS)
 
     if uppercase:
         combination += string.ascii_uppercase
