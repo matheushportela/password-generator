@@ -2,6 +2,8 @@
 TODO Criar um arquivo e guardar a senha que o usuário escolher do prompt, por exemplo: ele escolheu a senha nr 4, é ela que ele vai guardar
 TODO Criar um dicionário que o usuario consiga associar a senha que ele escolheu com aquele site específico. Exemplo {Google: abDCasd31@#, Facebook: outrasenha}
 
+! BUG: Se um usuário colocar qualquer coisa que não seja (Yes, y, No, n) na hora de selecionar para regerar a senha, o programa entra em loop infinito
+
 """
 import string
 import secrets
@@ -69,7 +71,7 @@ def main():
     
     while(userChoice != 3):
         userChoice = show_menu()
-        
+        LIST_USER_PASSWORDS_CHOICES.clear()
         match userChoice:
             case 1:
                 while(True):
@@ -96,8 +98,9 @@ def main():
                 print("-----------------------------------------------------")
                 
                 while(True):
-                    regenerateResponse = input("Do you want to regenerate the passwords? (Yes / No) ").lower()
+                    regenerateResponse = str(input("Do you want to regenerate the passwords? (Yes / No) ")).lower()
                     regenerateResponse = check_yes_or_no(regenerateResponse)
+                    print(regenerateResponse)
                     
                     if(regenerateResponse):
                         os.system('cls')
