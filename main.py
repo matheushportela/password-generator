@@ -1,6 +1,4 @@
 """
-TODO Criar um arquivo e guardar a senha que o usuário escolher do prompt, por exemplo: ele escolheu a senha nr 4, é ela que ele vai guardar
-TODO Criar um dicionário que o usuario consiga associar a senha que ele escolheu com aquele site específico. Exemplo {Google: abDCasd31@#, Facebook: outrasenha}
 TODO O usuário não pode escolher a senha, ela deve ser criada com todos os requisitos que ele quer e mostrar, só então ele poderá regerar uma senha nova
 TODO Criar uma feature para ele digitar uma senha como ele quiser e o programa irá dizer o quão forte ela é. Se passar pelos requisitos ele pode vincular a senha a um site específico
 
@@ -17,8 +15,9 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-ENV_FILE_PATH = json.loads(os.environ['FILE_PATH'])
-ENV_FILE_NAME = json.loads(os.environ['FILE_NAME'])
+
+ENV_FILE_PATH = os.environ[r'FILE_PATH']
+ENV_FILE_NAME = os.environ['FILE_NAME']
 
 ENV_LIST_SYMBOLS = json.loads(os.environ['LIST_SYMBOLS'])
 ENV_MENU_CHOICES = json.loads(os.environ['LIST_CHOICES'])
@@ -27,6 +26,9 @@ YES_CHOICES = ['yes', 'y']
 NO_CHOICES = ['no', 'n']
 
 LIST_USER_PASSWORDS_CHOICES = []
+
+PASSWORDS_DICTIONARY = {}
+
 
 def show_menu():
     while (True):
@@ -71,6 +73,9 @@ def generate_passwords(length: int, symbols: bool, uppercase: bool):
 
 
 def main():
+    with open(os.path.join(ENV_FILE_PATH, ENV_FILE_NAME)) as fp:
+        PASSWORDS_DICTIONARY = json.load(fp)
+    print(PASSWORDS_DICTIONARY)
     os.system('cls')
     userChoice = 0
     
@@ -126,25 +131,32 @@ def main():
                         
                         while(True):
                             savedPassword = int(input("Which password do you want to save? (1, 2, 3, 4 or 5)\n"))
-                            
                             if(savedPassword > 0 and savedPassword <= len(LIST_USER_PASSWORDS_CHOICES)):
                                 savedPassword = LIST_USER_PASSWORDS_CHOICES[savedPassword - 1]
-                                os.system('cls')
                                 print(f"You selected this password: {savedPassword}")
-                                print("Saving to your system...\n\n")
-                                with open(os.path.join(ENV_FILE_PATH, ENV_FILE_NAME), 'a+') as fp:
-                                    fp.write(savedPassword + '\n')
-                                time.sleep(3)
+                                while(True):
+                                    websiteName = str(input("Please enter the name of a website to be added with your password:\n"))
+                                    if websiteName in PASSWORDS_DICTIONARY:
+                                        print("This website already exists, please enter a different one")
+                                    else:
+                                        PASSWORDS_DICTIONARY[websiteName] = savedPassword
+                                        print("Saving to your system...\n\n")
+                                        time.sleep(2)
+                                        break
                                 break
                             else:
-                                print("Please select a valid option.\n")
+                                print("Please select a valid option.\n")        
                         break
+                jsonFile = json.dumps(PASSWORDS_DICTIONARY)
+                with open(os.path.join(ENV_FILE_PATH, ENV_FILE_NAME), 'w') as fp:
+                    fp.write(jsonFile)
+                time.sleep(3)
+                os.system('cls')
             case 2:
                 print("Not implemented yet")
             case 3:
                 print("Exiting...")
-                time.sleep(3)
-                os.system('cls')
+                
             case _:
                 print("Please select a valid option (1, 2, 3).\n")
 
