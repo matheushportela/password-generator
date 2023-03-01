@@ -1,8 +1,11 @@
 """
 TODO Criar um arquivo e guardar a senha que o usuário escolher do prompt, por exemplo: ele escolheu a senha nr 4, é ela que ele vai guardar
 TODO Criar um dicionário que o usuario consiga associar a senha que ele escolheu com aquele site específico. Exemplo {Google: abDCasd31@#, Facebook: outrasenha}
+TODO O usuário não pode escolher a senha, ela deve ser criada com todos os requisitos que ele quer e mostrar, só então ele poderá regerar uma senha nova
+TODO Criar uma feature para ele digitar uma senha como ele quiser e o programa irá dizer o quão forte ela é. Se passar pelos requisitos ele pode vincular a senha a um site específico
 
 ! BUG: Se um usuário colocar qualquer coisa que não seja (Yes, y, No, n) na hora de selecionar para regerar a senha, o programa entra em loop infinito
+! BUG: A senha pode não ser criada com todos os requisitos que o usuário pede
 
 """
 import string
@@ -12,8 +15,10 @@ import json
 import time
 from dotenv import load_dotenv
 
-
 load_dotenv()
+
+ENV_FILE_PATH = json.loads(os.environ['FILE_PATH'])
+ENV_FILE_NAME = json.loads(os.environ['FILE_NAME'])
 
 ENV_LIST_SYMBOLS = json.loads(os.environ['LIST_SYMBOLS'])
 ENV_MENU_CHOICES = json.loads(os.environ['LIST_CHOICES'])
@@ -127,6 +132,8 @@ def main():
                                 os.system('cls')
                                 print(f"You selected this password: {savedPassword}")
                                 print("Saving to your system...\n\n")
+                                with open(os.path.join(ENV_FILE_PATH, ENV_FILE_NAME), 'a+') as fp:
+                                    fp.write(savedPassword + '\n')
                                 time.sleep(3)
                                 break
                             else:
